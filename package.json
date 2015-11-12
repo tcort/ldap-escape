@@ -1,0 +1,66 @@
+{
+  "name": "ldap-escape",
+  "version": "0.0.0",
+  "description": "Escape functions for LDAP filters and distinguished names to prevent LDAP injection attacks.",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "jshint index.js",
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tcort/ldap-escape.git"
+  },
+  "keywords": [
+    "LDAP",
+    "escape",
+    "security",
+    "injection",
+    "filter",
+    "dn"
+  ],
+  "author": "Thomas Cort <linuxgeek@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tcort/ldap-escape/issues"
+  },
+  "homepage": "https://github.com/tcort/ldap-escape#readme",
+  "dependencies": {
+    "jshint": "^2.8.0",
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "jshint": "^2.8.0",
+    "mocha": "^2.3.3"
+  },
+  "jshintConfig": {
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "globalstrict": true,
+    "immed": true,
+    "indent": 4,
+    "moz": true,
+    "newcap": true,
+    "noarg": true,
+    "node": true,
+    "noempty": true,
+    "nonew": true,
+    "trailing": true,
+    "undef": true,
+    "smarttabs": true,
+    "strict": true,
+    "validthis": true,
+    "globals": {
+      "describe": false,
+      "it": false,
+      "before": false,
+      "beforeEach": false,
+      "after": false,
+      "afterEach": false
+    }
+  }
+}
