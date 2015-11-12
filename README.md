@@ -77,12 +77,17 @@ Returns:
     };
 
     var safeFilter = ldapEscape.filter('(uid=${uid})', alice);
+    // -> (uid=1337)
 
     var userEscape = ldapEscape.filter('(uid=${uid})');
     safeFilter = userEscape(alice);
+    // -> (uid=1337)
+
     safeFilter = userEscape(bob);
+    // -> (uid=42)
 
     var safeDn = ldapEscape.dn('cn=${cn},dc=test', alice);
+    // -> cn=alice,dc=test
 
 ## Testing
 
