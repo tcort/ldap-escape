@@ -73,7 +73,7 @@ Returns:
 
     var bob = {
         uid: 42,
-        cn: 'alice',
+        cn: 'bob',
     };
 
     var safeFilter = ldapEscape.filter('(uid=${uid})', alice);
