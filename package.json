@@ -32,7 +32,7 @@
   "devDependencies": {
     "expect.js": "^0.3.1",
     "jshint": "^2.8.0",
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.4"
   },
   "jshintConfig": {
     "bitwise": true,
