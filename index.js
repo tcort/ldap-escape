@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var fmtr = require('fmtr');
 
 var replacements = {
 
@@ -39,12 +40,8 @@ var replacements = {
 module.exports = {
 
     filter: function escapeFilter(format, unsafe) {
-        var formatter = _.template(format, {
-            interpolate: /\$\{([^\}]+)\}/gm
-        });
-
         function escapeFilterClosure(unsafe) {
-            return formatter(_.transform(unsafe, function doEscape(safe, val, key) {
+            return fmtr(format, _.transform(unsafe, function doEscape(safe, val, key) {
                 safe[key] = ('' + val).replace(/(\u0000|\u0028|\u0029|\u002a|\u005c)/gm, function doReplace(str) {
                     return replacements.filter[str];
                 });
@@ -55,12 +52,8 @@ module.exports = {
     },
 
     dn: function escapeDn(format, unsafe) {
-        var formatter = _.template(format, {
-            interpolate: /\$\{([^\}]+)\}/gm
-        });
-
         function escapeDnClosure(unsafe) {
-            return formatter(_.transform(unsafe, function doEscape(safe, val, key) {
+            return fmtr(format, _.transform(unsafe, function doEscape(safe, val, key) {
                 safe[key] = ('' + val).replace(/(\u0022|\u0023|\u002b|\u002c|\u003b|\u003c|\u003d|\u003e|\u005c)/gm, function doReplace(str) {
                     return replacements.dn[str];
                 });
