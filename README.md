@@ -94,7 +94,6 @@ Returns:
 
     var userEscape = ldapEscape.filter('(uid=${uid})');
 
-
     var safeFilter = userEscape(alice);
     console.log(safeFilter); // -> '(uid=1337)'
 
@@ -136,7 +135,7 @@ Returns:
     var safeDn = dnEscape(alice);
     console.log(safeDn); // -> 'cn=alice,dc=test'
 
-    var safeDn = dnEscape(bob);
+    safeDn = dnEscape(bob);
     console.log(safeDn); // -> 'cn=bob,dc=test'
 
 ## Testing
