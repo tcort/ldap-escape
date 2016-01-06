@@ -112,7 +112,7 @@ Returns:
     };
 
     var safeDn = ldapEscape.dn('cn=${cn},dc=test', alice);
-    console.log(safeDn); // -> cn=alice,dc=test
+    console.log(safeDn); // -> 'cn=alice,dc=test'
 
 ### Create a Function for Escaping DNs
 
