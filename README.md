@@ -36,7 +36,7 @@ Uses the escape codes from [Active Directory: Characters to Escape](http://socia
 
 ## API
 
-### ldapEscape.filter(format, unsafe)
+### ldapEscape.filter(format [, unsafe])
 
 Parameters:
 
@@ -48,7 +48,7 @@ Returns:
 * safe string (when `unsafe` is supplied).
 * function (when `unsafe` is not supplied).
 
-### ldapEscape.dn(format, unsafe)
+### ldapEscape.dn(format [, unsafe])
 
 Parameters:
 
@@ -60,7 +60,23 @@ Returns:
 * safe string (when `unsafe` is supplied).
 * function (when `unsafe` is not supplied).
 
-## Example
+## Examples
+
+### Escape a Search Filter
+
+    "use strict";
+
+    var ldapEscape = require('ldap-escape');
+
+    var alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
+
+    var safeFilter = ldapEscape.filter('(uid=${uid})', alice);
+    console.log(safeFilter); // -> '(uid=1337)'
+
+### Create a Function for Escaping Search Filters
 
     "use strict";
 
@@ -76,18 +92,52 @@ Returns:
         cn: 'bob',
     };
 
-    var safeFilter = ldapEscape.filter('(uid=${uid})', alice);
-    // -> (uid=1337)
-
     var userEscape = ldapEscape.filter('(uid=${uid})');
-    safeFilter = userEscape(alice);
-    // -> (uid=1337)
+
+
+    var safeFilter = userEscape(alice);
+    console.log(safeFilter); // -> '(uid=1337)'
 
     safeFilter = userEscape(bob);
-    // -> (uid=42)
+    console.log(safeFilter); // -> '(uid=42)'
+
+### Escape a DN
+
+    "use strict";
+
+    var ldapEscape = require('ldap-escape');
+
+    var alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
 
     var safeDn = ldapEscape.dn('cn=${cn},dc=test', alice);
-    // -> cn=alice,dc=test
+    console.log(safeDn); // -> cn=alice,dc=test
+
+### Create a Function for Escaping DNs
+
+    "use strict";
+
+    var ldapEscape = require('ldap-escape');
+
+    var alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
+
+    var bob = {
+        uid: 42,
+        cn: 'bob',
+    };
+
+    var dnEscape = ldapEscape.dn('cn=${cn},dc=test');
+
+    var safeDn = dnEscape(alice);
+    console.log(safeDn); // -> 'cn=alice,dc=test'
+
+    var safeDn = dnEscape(bob);
+    console.log(safeDn); // -> 'cn=bob,dc=test'
 
 ## Testing
 
