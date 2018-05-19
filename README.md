@@ -34,11 +34,15 @@ Uses the escape codes from [Active Directory: Characters to Escape](http://socia
 | `=`                         | `\=`   |
 | `SPC` (leading or trailing) | `\ `   |
 
-## API
+## Template Literal Tag Functions
 
 ### ldapEscape.filter
 
+Escapes input for use as an LDAP filter.
+
 ### ldapEscape.dn
+
+Escapes input for use as an LDAP distinguished name.
 
 ## Examples
 
@@ -50,8 +54,7 @@ Uses the escape codes from [Active Directory: Characters to Escape](http://socia
 
     const uid = 1337;
 
-    const safeFilter = ldapEscape.filter`uid=${uid}`;
-    console.log(safeFilter); // -> '(uid=1337)'
+    console.log(ldapEscape.filter`uid=${uid}`); // -> '(uid=1337)'
 
 ### Escape a DN
 
@@ -61,8 +64,7 @@ Uses the escape codes from [Active Directory: Characters to Escape](http://socia
 
     const cn = 'alice';
 
-    const safeDn = ldapEscape.dn`cn=${cn},dc=test`;
-    console.log(safeDn); // -> 'cn=alice,dc=test'
+    console.log(ldapEscape.dn`cn=${cn},dc=test`); // -> 'cn=alice,dc=test'
 
 ## Testing
 
