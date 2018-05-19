@@ -1,9 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
-var fmtr = require('fmtr');
-
-var replacements = {
+const replacements = {
 
     /* search filter replacements */
 
@@ -39,35 +36,31 @@ var replacements = {
 
 module.exports = {
 
-    filter: function escapeFilter(format, unsafe) {
-        function escapeFilterClosure(unsafe) {
-            return fmtr(format, _.transform(unsafe, function doEscape(safe, val, key) {
-                safe[key] = ('' + val).replace(/(\u0000|\u0028|\u0029|\u002a|\u005c)/gm, function doReplace(str) {
-                    return replacements.filter[str];
-                });
-            }));
-        }
-
-        return (arguments.length === 1) ? escapeFilterClosure : escapeFilterClosure(unsafe);
+    filter: function filter(strings, ...values) {
+        let safe = '';
+        strings.forEach((string, i) => {
+            safe += string;
+            if (values.length > i) {
+                safe += `${values[i]}`.replace(/(\u0000|\u0028|\u0029|\u002a|\u005c)/gm, (ch) => replacements.filter[ch]);
+            }
+        });
+        return safe;
     },
 
-    dn: function escapeDn(format, unsafe) {
-        function escapeDnClosure(unsafe) {
-            return fmtr(format, _.transform(unsafe, function doEscape(safe, val, key) {
-                safe[key] = ('' + val).replace(/(\u0022|\u0023|\u002b|\u002c|\u003b|\u003c|\u003d|\u003e|\u005c)/gm, function doReplace(str) {
-                    return replacements.dn[str];
-                });
+    dn: function dn(strings, ...values) {
+        let safe = '';
+        strings.forEach((string, i) => {
+            safe += string;
+            if (values.length > i) {
+                safe += `${values[i]}`
+                    .replace(/(\u0022|\u0023|\u002b|\u002c|\u003b|\u003c|\u003d|\u003e|\u005c)/gm, (ch) => replacements.dn[ch])
+                    .replace(/^(\u0020)/gm, (ch) => replacements.dnBegin[ch])
+                    .replace(/(\u0020)$/gm, (ch) => replacements.dnEnd[ch]);
 
-                safe[key] = safe[key].replace(/^(\u0020)/gm, function doReplace(str) {
-                    return replacements.dnBegin[str];
-                });
+            }
+        });
+        return safe;
+    },
 
-                safe[key] = safe[key].replace(/(\u0020)$/gm, function doReplace(str) {
-                    return replacements.dnEnd[str];
-                });
-            }));
-        }
 
-        return (arguments.length === 1) ? escapeDnClosure : escapeDnClosure(unsafe);
-    }
 };

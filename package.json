@@ -25,16 +25,14 @@
     "url": "https://github.com/tcort/ldap-escape/issues"
   },
   "homepage": "https://github.com/tcort/ldap-escape#readme",
-  "dependencies": {
-    "lodash": "^4.17.4",
-    "fmtr": "^1.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "expect.js": "^0.3.1",
     "jshint": "^2.9.5",
     "mocha": "^4.0.1"
   },
   "jshintConfig": {
+    "esversion": 6,
     "bitwise": true,
     "curly": true,
     "eqeqeq": true,
