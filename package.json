@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "jshint index.js",
-    "test": "mocha -R spec"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,8 @@
   "homepage": "https://github.com/tcort/ldap-escape#readme",
   "dependencies": {},
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "jshint": "^2.10.1",
-    "mocha": "^6.0.2"
+    "jest": "^24.1.0",
+    "jshint": "^2.10.1"
   },
   "jshintConfig": {
     "esversion": 6,
