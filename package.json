@@ -1,6 +1,6 @@
 {
   "name": "ldap-escape",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Escape functions for LDAP filters and distinguished names to prevent LDAP injection attacks.",
   "main": "index.js",
   "scripts": {
