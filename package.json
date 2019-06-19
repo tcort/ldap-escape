@@ -27,8 +27,8 @@
   "homepage": "https://github.com/tcort/ldap-escape#readme",
   "dependencies": {},
   "devDependencies": {
-    "jest": "^24.1.0",
-    "jshint": "^2.10.1"
+    "jest": "^24.8.0",
+    "jshint": "^2.10.2"
   },
   "jshintConfig": {
     "esversion": 6,
