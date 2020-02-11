@@ -54,7 +54,7 @@ Escapes input for use as an LDAP distinguished name.
 
     const uid = 1337;
 
-    console.log(ldapEscape.filter`uid=${uid}`); // -> '(uid=1337)'
+    console.log(ldapEscape.filter`uid=${uid}`); // -> 'uid=1337'
 
 ### Escape a DN
 
