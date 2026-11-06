@@ -1,6 +1,6 @@
 # ldap-escape
 
-Template literal tag functions for LDAP filters and distinguished names to prevent [LDAP injection](https://www.owasp.org/index.php/LDAP_injection) attacks.
+Escape functions for LDAP filters and distinguished names to prevent [LDAP injection](https://www.owasp.org/index.php/LDAP_injection) attacks.
 Uses the escape codes from [Active Directory: Characters to Escape](http://social.technet.microsoft.com/wiki/contents/articles/5312.active-directory-characters-to-escape.aspx).
 
 ## Installation
@@ -34,15 +34,31 @@ Uses the escape codes from [Active Directory: Characters to Escape](http://socia
 | `=`                         | `\=`   |
 | `SPC` (leading or trailing) | `\ `   |
 
-## Template Literal Tag Functions
+## API
 
-### ldapEscape.filter
+### ldapEscape.filter(format [, unsafe])
 
-Escapes input for use as an LDAP filter.
+Parameters:
 
-### ldapEscape.dn
+* `format` string with `${propertyName}` placeholder(s) where `propertyName` is the name of a property of `unsafe`
+* `unsafe` an object containing values to escape and substitute in the format string.
 
-Escapes input for use as an LDAP distinguished name.
+Returns:
+
+* safe string (when `unsafe` is supplied).
+* function (when `unsafe` is not supplied).
+
+### ldapEscape.dn(format [, unsafe])
+
+Parameters:
+
+* `format` string with `${propertyName}` placeholder(s) where `propertyName` is the name of a property of `unsafe`
+* `unsafe` an object containing values to escape and substitute in the format string.
+
+Returns:
+
+* safe string (when `unsafe` is supplied).
+* function (when `unsafe` is not supplied).
 
 ## Examples
 
@@ -52,9 +68,37 @@ Escapes input for use as an LDAP distinguished name.
 
     const ldapEscape = require('ldap-escape');
 
-    const uid = 1337;
+    const alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
 
-    console.log(ldapEscape.filter`uid=${uid}`); // -> 'uid=1337'
+    const safeFilter = ldapEscape.filter('(uid=${uid})', alice);
+    console.log(safeFilter); // -> '(uid=1337)'
+
+### Create a Function for Escaping Search Filters
+
+    "use strict";
+
+    const ldapEscape = require('ldap-escape');
+
+    const alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
+
+    const bob = {
+        uid: 42,
+        cn: 'bob',
+    };
+
+    const userEscape = ldapEscape.filter('(uid=${uid})');
+
+    const safeFilter = userEscape(alice);
+    console.log(safeFilter); // -> '(uid=1337)'
+
+    safeFilter = userEscape(bob);
+    console.log(safeFilter); // -> '(uid=42)'
 
 ### Escape a DN
 
@@ -62,9 +106,37 @@ Escapes input for use as an LDAP distinguished name.
 
     const ldapEscape = require('ldap-escape');
 
-    const cn = 'alice';
+    const alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
 
-    console.log(ldapEscape.dn`cn=${cn},dc=test`); // -> 'cn=alice,dc=test'
+    const safeDn = ldapEscape.dn('cn=${cn},dc=test', alice);
+    console.log(safeDn); // -> 'cn=alice,dc=test'
+
+### Create a Function for Escaping DNs
+
+    "use strict";
+
+    const ldapEscape = require('ldap-escape');
+
+    const alice = {
+        uid: 1337,
+        cn: 'alice',
+    };
+
+    const bob = {
+        uid: 42,
+        cn: 'bob',
+    };
+
+    const dnEscape = ldapEscape.dn('cn=${cn},dc=test');
+
+    const safeDn = dnEscape(alice);
+    console.log(safeDn); // -> 'cn=alice,dc=test'
+
+    safeDn = dnEscape(bob);
+    console.log(safeDn); // -> 'cn=bob,dc=test'
 
 ## Testing
 

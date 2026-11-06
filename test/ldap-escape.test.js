@@ -1,71 +1,55 @@
 'use strict';
 
-var ldapEscape = require('../index');
+const ldapEscape = require('../index');
+const expect = require('expect.js');
 
 describe('ldap-escape', function () {
-    describe('.filter', function () {
+    describe('.filter(format, unsafe)', function () {
         it('should work in the base case (no escaping), returning a string', function () {
-            const uid = 1337;
-            expect(ldapEscape.filter`(uid=${uid})`).toBe('(uid=1337)');
+            expect(ldapEscape.filter('(uid=${uid})', { uid: 1337 })).to.be('(uid=1337)');
+        });
+        it('should work in the base case (no escaping), returning a function', function () {
+            const escaper = ldapEscape.filter('(uid=${uid})');
+            expect(escaper({ uid: 1337 })).to.be('(uid=1337)');
         });
         it('should correctly escape the OWASP Christmas Tree Example', function () {
-            const test = 'Hi (This) = is * a \\ test # ç à ô';
-            expect(ldapEscape.filter`(test=${test})`).toBe('(test=Hi \\28This\\29 = is \\2a a \\5c test # ç à ô)');
+            expect(ldapEscape.filter('(test=${test})', { test: 'Hi (This) = is * a \\ test # ç à ô' })).to.be('(test=Hi \\28This\\29 = is \\2a a \\5c test # ç à ô)');
         });
         it('should correctly escape the PHP test case', function () {
-            const test = 'foo=bar(baz)*';
-            expect(ldapEscape.filter`${test}`).toBe('foo=bar\\28baz\\29\\2a');
+            expect(ldapEscape.filter('${test}', { test: 'foo=bar(baz)*' })).to.be('foo=bar\\28baz\\29\\2a');
         });
     });
-    describe('.dn', function () {
+    describe('.dn(format, unsafe)', function () {
         it('should work in the base case (no escaping), returning a string', function () {
-            const cn = 'alice';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=alice,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: 'alice', dc: 'com' })).to.be('cn=alice,dc=com');
+        });
+        it('should work in the base case (no escaping), returning a function', function () {
+            const escaper = ldapEscape.dn('cn=${cn},dc=${dc}');
+            expect(escaper({ cn: 'alice', dc: 'com' })).to.be('cn=alice,dc=com');
         });
         it('should escape a leading space', function () {
-            const cn = ' alice';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=\\ alice,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: ' alice', dc: 'com' })).to.be('cn=\\ alice,dc=com');
         });
         it('should escape a leading hash', function () {
-            const cn = '#alice';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=\\#alice,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: '#alice', dc: 'com' })).to.be('cn=\\#alice,dc=com');
         });
         it('should escape a leading hash and trailing space', function () {
-            const cn = '# ';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=\\#\\ ,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: '# ', dc: 'com' })).to.be('cn=\\#\\ ,dc=com');
         });
         it('should escape a trailing space', function () {
-            const cn = 'alice ';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=alice\\ ,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: 'alice ', dc: 'com' })).to.be('cn=alice\\ ,dc=com');
         });
         it('should escape a dn of just 3 spaces', function () {
-            const cn = '   ';
-            const dc = 'com';
-            expect(ldapEscape.dn`cn=${cn},dc=${dc}`).toBe('cn=\\  \\ ,dc=com');
+            expect(ldapEscape.dn('cn=${cn},dc=${dc}', { cn: '   ', dc: 'com' })).to.be('cn=\\  \\ ,dc=com');
         });
         it('should correctly escape the OWASP Christmas Tree Example', function () {
-            const dn = ' Hello\\ + , "World" ; ';
-            expect(ldapEscape.dn`${dn}`).toBe('\\ Hello\\\\ \\+ \\, \\\"World\\\" \\;\\ ');
+            expect(ldapEscape.dn('${dn}', { dn: ' Hello\\ + , "World" ; ' })).to.be('\\ Hello\\\\ \\+ \\, \\\"World\\\" \\;\\ ');
         });
         it('should correctly escape the Active Directory Examples', function () {
-            let cn, ou;
-
-            cn = 'Smith, James K.';
-            expect(ldapEscape.dn`cn=${cn},ou=West,dc=MyDomain,dc=com`).toBe('cn=Smith\\, James K.,ou=West,dc=MyDomain,dc=com');
-
-            ou = 'Sales\\Engineering';
-            expect(ldapEscape.dn`ou=${ou},dc=MyDomain,dc=com`).toBe('ou=Sales\\\\Engineering,dc=MyDomain,dc=com');
-
-            cn = 'East#Test + Lab';
-            expect(ldapEscape.dn`cn=${cn},ou=West,dc=MyDomain,dc=com`).toBe('cn=East\\#Test \\+ Lab,ou=West,dc=MyDomain,dc=com');
-
-            cn = ' Jim Smith ';
-            expect(ldapEscape.dn`cn=${cn},ou=West,dc=MyDomain,dc=com`).toBe('cn=\\ Jim Smith\\ ,ou=West,dc=MyDomain,dc=com');
+            expect(ldapEscape.dn('cn=${cn},ou=West,dc=MyDomain,dc=com', { cn: 'Smith, James K.' })).to.be('cn=Smith\\, James K.,ou=West,dc=MyDomain,dc=com');
+            expect(ldapEscape.dn('ou=${ou},dc=MyDomain,dc=com', { ou: 'Sales\\Engineering' })).to.be('ou=Sales\\\\Engineering,dc=MyDomain,dc=com');
+            expect(ldapEscape.dn('cn=${cn},ou=West,dc=MyDomain,dc=com', { cn: 'East#Test + Lab' })).to.be('cn=East\\#Test \\+ Lab,ou=West,dc=MyDomain,dc=com');
+            expect(ldapEscape.dn('cn=${cn},ou=West,dc=MyDomain,dc=com', { cn: ' Jim Smith ' })).to.be('cn=\\ Jim Smith\\ ,ou=West,dc=MyDomain,dc=com');
         });
     });
 });

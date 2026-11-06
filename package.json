@@ -4,8 +4,7 @@
   "description": "Escape functions for LDAP filters and distinguished names to prevent LDAP injection attacks.",
   "main": "index.js",
   "scripts": {
-    "pretest": "jshint index.js",
-    "test": "jest"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -25,10 +24,13 @@
     "url": "https://github.com/tcort/ldap-escape/issues"
   },
   "homepage": "https://github.com/tcort/ldap-escape#readme",
-  "dependencies": {},
+  "dependencies": {
+    "fmtr": "^2.0.1",
+    "lodash": "^4.18.1"
+  },
   "devDependencies": {
-    "jest": "^30.5.2",
-    "jshint": "^2.13.6"
+    "expect.js": "^0.3.1",
+    "mocha": "^11.0.0"
   },
   "jshintConfig": {
     "esversion": 6,
@@ -59,5 +61,8 @@
       "after": false,
       "afterEach": false
     }
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
   }
 }
